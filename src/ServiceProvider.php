@@ -1,41 +1,45 @@
 <?php
-namespace DreamFactory\Core\Database;
+namespace DreamFactory\Core\Skeleton;
 
-use DreamFactory\Core\System\Resources\ExampleResource;
-use DreamFactory\Core\System\Components\SystemResourceManager;
-use DreamFactory\Core\System\Components\SystemResourceType;
-use DreamFactory\Core\Enums\LicenseLevel;
+use Illuminate\Routing\Router;
 
+use Illuminate\Support\Facades\Route;
+use Spatie\HttpLogger\Middlewares\HttpLogger;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
     public function boot()
     {
-//        $this->addMiddleware();
-
-        // subscribe to all listened to events
-//        Event::subscribe(new EventHandler());
+        // add our database config
+        $configPath = __DIR__ . '/../config/database.php';
+        if (function_exists('config_path')) {
+            $publishPath = config_path('database.php');
+        } else {
+            $publishPath = base_path('config/database.php');
+        }
+        $this->publishes([$configPath => $publishPath], 'config');
 
         // add migrations
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+
+        $this->addMiddleware();
     }
 
-    public function register()
+    /**
+     * Register any middleware aliases.
+     *
+     * @return void
+     */
+    protected function addMiddleware()
     {
-        // Add system service types.
-        $this->app->resolving('df.system.resource', function (SystemResourceManager $df) {
-            $df->addType(
-                new SystemResourceType([
-                    'name'                  => 'example',
-                    'label'                 => 'Example Resource',
-                    'description'           => 'Example of new system service.',
-                    'class_name'            => ExampleResource::class,
-                    'subscription_required' => LicenseLevel::GOLD,
-                    'singleton'             => false,
-                    'read_only'             => false,
-                ])
-            );
-        });
-    }
+        // the method name was changed in Laravel 5.4
+        if (method_exists(Router::class, 'aliasMiddleware')) {
+            Route::aliasMiddleware('df.http_logger', HttpLogger::class);
+        } else {
+            /** @noinspection PhpUndefinedMethodInspection */
+            Route::middleware('df.http_logger', HttpLogger::class);
+        }
 
+        Route::pushMiddlewareToGroup('df.api', 'df.http_logger');
+    }
 }
