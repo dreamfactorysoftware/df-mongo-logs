@@ -1,5 +1,5 @@
 <?php
-namespace DreamFactory\Core\Skeleton;
+namespace DreamFactory\Core\MongoLogs;
 
 use Illuminate\Routing\Router;
 
