@@ -1,6 +1,6 @@
 <?php
 
-namespace Utility\HttpLogger;
+namespace DreamFactory\Core\MongoLogs\Utility\HttpLogger;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;

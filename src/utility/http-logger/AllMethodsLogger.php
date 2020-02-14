@@ -1,6 +1,6 @@
 <?php
 
-namespace Utility\HttpLogger;
+namespace DreamFactory\Core\MongoLogs\Utility\HttpLogger;
 
 use Illuminate\Http\Request;
 use Spatie\HttpLogger\LogProfile;

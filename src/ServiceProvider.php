@@ -10,19 +10,31 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
     public function boot()
     {
-        // add our database config
-        $configPath = __DIR__ . '/../config/database.php';
+        if (env('LOGSDB_ENABLED') != 'true') {
+            return;
+        }
+
+        $configPath = __DIR__ . '/../config/http-logger.php';
         if (function_exists('config_path')) {
-            $publishPath = config_path('database.php');
+            $publishPath = config_path('http-logger.php');
         } else {
-            $publishPath = base_path('config/database.php');
+            $publishPath = base_path('config/http-logger.php');
         }
         $this->publishes([$configPath => $publishPath], 'config');
-
         // add migrations
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 
         $this->addMiddleware();
+    }
+
+    public function register()
+    {
+        if (env('LOGSDB_ENABLED') != 'true') {
+            return;
+        }
+
+        $this->mergeConfigFrom(__DIR__ . '/../config/logs-db.php', 'database.connections');
+        $this->mergeConfigFrom(__DIR__ . '/../config/http-logger.php', 'http-logger');
     }
 
     /**
