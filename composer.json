@@ -25,7 +25,7 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "dreamfactory/df-core": "~0.21.0",
+    "dreamfactory/df-core": "~0.21.1",
     "jenssegers/mongodb": "~3.6.3",
     "spatie/laravel-http-logger": "^1.1",
     "ext-json": "*",
