@@ -37,7 +37,7 @@
   },
   "autoload": {
     "classmap": [
-      "src/utility"
+      "src/Utility"
     ],
     "psr-4": {
       "DreamFactory\\Core\\MongoLogs\\": "src/"
