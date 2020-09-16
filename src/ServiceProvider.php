@@ -1,6 +1,8 @@
 <?php
 namespace DreamFactory\Core\MongoLogs;
 
+use DreamFactory\Core\MongoLogs\Commands\MyCommand;
+use DreamFactory\Core\MongoLogs\Utility\AsyncLogger\AsyncLogger;
 use Illuminate\Routing\Router;
 
 use Illuminate\Support\Facades\Route;
@@ -12,6 +14,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     {
         if (env('LOGSDB_ENABLED') != 'true') {
             return;
+        }
+
+        if (env('LOGSDB_ASYNC') == 'true') {
+            AsyncLogger::registerAsyncLogger($this->app);
         }
 
         $configPath = __DIR__ . '/../config/http-logger.php';
