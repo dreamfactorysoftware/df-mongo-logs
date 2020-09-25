@@ -3,6 +3,7 @@
 namespace DreamFactory\Core\MongoLogs\Utility\HttpLogger;
 
 use Carbon\Carbon;
+use DreamFactory\Core\MongoLogs\Utility\AsyncLogger\AsyncLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -22,25 +23,28 @@ class MongoLogWriter implements LogWriter
             $uri = substr($uri, 0, -1);
         }
 
-        $bodyAsJson = json_encode($request->except(config('http-logger.except')));
-
         $files = array_map(function (UploadedFile $file) {
             return $file->getRealPath();
         }, iterator_to_array($request->files));
 
         $timestamp = Carbon::now();
 
-        $message = "{$method} {$uri} - Body: {$bodyAsJson} - Files: ".implode(', ', $files);
+        $message = "{$method} {$uri} - Files: ".implode(', ', $files);
 
-        DB::connection('logsdb')->collection('access')->insert(
-            [
-                'timestamp' => $timestamp->toDateTimeString(),
-                'method' => $method,
-                'uri' => $uri,
-                'body' => $bodyAsJson,
-                'expireAt' => new UTCDateTime(Carbon::now()->addDays(45)->getTimestamp()*1000)
-            ]
-        );
+        $record = [
+            'timestamp' => $timestamp->toDateTimeString(),
+            'date' => $timestamp->toDateString(),
+            'method' => $method,
+            'uri' => $uri,
+            'expireAt' => new UTCDateTime(Carbon::now()->addDays(15)->getTimestamp()*1000),
+            'apiKey' => $request->header('X-DreamFactory-API-Key'),
+        ];
+
+        if (env('LOGSDB_ASYNC') == 'true') {
+            AsyncLogger::logRequest($record);
+        } else {
+            DB::connection('logsdb')->collection('access')->insert($record);
+        }
 
         Log::info($message);
     }
