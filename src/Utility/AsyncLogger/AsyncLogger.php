@@ -25,8 +25,8 @@ class AsyncLogger
                 if (strlen($request) != 0) {
                     try {
                         $arr[] = unserialize($request);
-                    } catch (\Error $error) {
-                        Log::error('AsyncLogger::scheduleCallHandler - Unserialize error. Message: ' . $error->getMessage());
+                    } catch (\ErrorException $error) {
+                        Log::warning('AsyncLogger::scheduleCallHandler - Unserialize error. Message: ' . $error->getMessage());
                     }
                 }
             }
@@ -53,8 +53,8 @@ class AsyncLogger
     static function logRequest($request) {
         try {
             file_put_contents(storage_path(AsyncLogger::$FILE), serialize($request) . "\n", FILE_APPEND);
-        } catch (\Error $error) {
-            Log::error('AsyncLogger::logRequest - Write file error. Message: ' . $error->getMessage());
+        } catch (\ErrorException $error) {
+            Log::warning('AsyncLogger::logRequest - Write file error. Message: ' . $error->getMessage());
         }
     }
 }
