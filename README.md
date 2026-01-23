@@ -4,6 +4,11 @@ DreamFactory 4.0.1 and newer supports a very simple solution for logging all req
 All records requested in the API will be written to the database.
 Logging API requests service currently supports only MongoDB.
 
+
+## Overview
+
+DreamFactory is a secure, self-hosted enterprise data access platform that provides governed API access to any data source, connecting enterprise applications and on-prem LLMs with role-based access and identity passthrough.
+
 ## Configuration
 
 To configure the logging of all requests, you need to go to the file
