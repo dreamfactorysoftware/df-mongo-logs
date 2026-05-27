@@ -12,7 +12,7 @@
   ],
   "authors": [
     {
-      "name":  "DreamFactory Team",
+      "name": "DreamFactory Team",
       "email": "code@dreamfactory.com"
     }
   ],
@@ -26,10 +26,10 @@
   "prefer-stable": true,
   "require": {
     "dreamfactory/df-core": "~1.0",
-    "jenssegers/mongodb": "^4.2.0",
-    "spatie/laravel-http-logger": "^1.9",
     "ext-json": "*",
-    "ext-mongodb": "*"
+    "ext-mongodb": "*",
+    "mongodb/laravel-mongodb": "^5.7",
+    "spatie/laravel-http-logger": "^1.9"
   },
   "require-dev": {
     "phpunit/phpunit": "@stable",
